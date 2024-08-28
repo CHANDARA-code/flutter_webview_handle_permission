@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
+</head>
+<body>
+
+<button onclick="requestCameraAccess()">Request Camera Access</button>
+<button onclick="capturePhoto()">Capture Photo</button>
+<br>
+<img id="capturedPhoto" style="display:none; margin-top: 20px; width: 250px;" />
+
+<script>
+    function requestCameraAccess() {
+        if (window.flutter_inappwebview) {
+            window.flutter_inappwebview.callHandler('requestCameraPermission')
+                .then(function(granted) {
+                    if (granted) {
+                        alert('Camera permission granted!');
+                    } else {
+                        alert('Camera permission denied!');
+                    }
+                });
+        }
+    }
+
+    function capturePhoto() {
+        if (window.flutter_inappwebview) {
+            window.flutter_inappwebview.callHandler('capturePhoto')
+                .then(function(base64Photo) {
+                    if (base64Photo) {
+                        displayCapturedPhoto(base64Photo);
+                    } else {
+                        alert('Photo capture failed or was cancelled.');
+                    }
+                });
+        }
+    }
+
+    function displayCapturedPhoto(base64Photo) {
+        const imgElement = document.getElementById('capturedPhoto');
+        imgElement.src = `data:image/jpeg;base64,${base64Photo}`;
+        imgElement.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
